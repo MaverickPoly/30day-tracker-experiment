@@ -3,20 +3,19 @@ import { Client, Account, Databases, Query } from 'appwrite';
 
 
 const client = new Client()
-    .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('695d2a0300376b9b1a3f');
+    .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+    .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
 
 const account = new Account(client);
 const databases = new Databases(client);
 
-const DATABASE_ID = '695d2c70002b4eb4a51c';
-const COLLECTION_ID = 'daily_scores';
+const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
+const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
 
 function App() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
     const [error, setError] = useState('');
     const [myScores, setMyScores] = useState([]);
     const [friendScores, setFriendScores] = useState([]);
@@ -54,12 +53,26 @@ function App() {
         setError('');
         setLoading(true);
 
+        const user1 = import.meta.env.VITE_USER1;
+        const user2 = import.meta.env.VITE_USER2;
+        const password = import.meta.env.VITE_PASSWORD
+
+        let email;
+        if (username === "kumush") {
+            email = user1;
+        } else if (username === "ezoza") {
+            email = user2;
+        } else {
+            setError("Login failed! Invalid credentials!");
+            setLoading(false);
+            return
+        }
+
         try {
             await account.createEmailPasswordSession(email, password);
             const currentUser = await account.get();
             setUser(currentUser);
-            setEmail('');
-            setPassword('');
+            setUsername("");
         } catch (err) {
             setError(err.message || 'Login failed. Please check your credentials.');
         } finally {
@@ -214,26 +227,11 @@ function App() {
                                 Email
                             </label>
                             <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none transition"
-                                placeholder="your@email.com"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-gray-700 text-sm font-semibold mb-2">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:outline-none transition"
-                                placeholder="••••••••"
+                                placeholder="your name"
                             />
                         </div>
 
