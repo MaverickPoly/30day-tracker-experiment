@@ -53,14 +53,14 @@ function App() {
         setError('');
         setLoading(true);
 
-        const user1 = import.meta.env.VITE_USER1;
-        const user2 = import.meta.env.VITE_USER2;
+        const user1 = import.meta.env.VITE_USER1_E;
+        const user2 = import.meta.env.VITE_USER2_E;
         const password = import.meta.env.VITE_PASSWORD
 
         let email;
-        if (username === "kumush") {
+        if (username === import.meta.env.VITE_USER1) {
             email = user1;
-        } else if (username === "ezoza") {
+        } else if (username === import.meta.env.VITE_USER2) {
             email = user2;
         } else {
             setError("Login failed! Invalid credentials!");
